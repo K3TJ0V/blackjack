@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link href="https://fonts.cdnfonts.com/css/casino" rel="stylesheet">
+    <template id="cardTemplate">
+        <div class="card"></div>
+    </template>
 </head>
 <body>
     <header class="header">
@@ -12,9 +15,11 @@
     </header>
     <main class="main">
         <section class="main__table">
-            <button class="main__table--startButton">
+            <button class="main__table--startButton startButton-js">
                 START
             </button>
+            <section class="table__botSide botSide--js"></section>
+            <section class="table__playerSide playerSide--js"></section>
         </section>
     </main>
     <script type="module" src="../js/index.js"></script>
