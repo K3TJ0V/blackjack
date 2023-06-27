@@ -1,0 +1,50 @@
+$backgroundColor: radial-gradient(circle, rgb(160, 215, 158) 0%, rgba(4,97,0,1) 79%)  rgb(134,181,132);
+$headerFontColor: #DCEB0C linear-gradient(to top, #eeff00 0%, #ff6a00 100%);
+body{
+    width: 100vw;
+    height: 100vh;
+    background: $backgroundColor;
+}
+.header{
+    font-family: 'Casino';
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    &__h1{
+        width: 235px;
+        background: $headerFontColor;
+        background-clip: border-box;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 50px;
+        margin: 30px 0;
+    }
+}
+.main{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 80%;
+    &__table{
+        position: relative;
+        width: 300px;
+        height: 600px;
+        background-image: url(../assets/table.svg);
+        background-size: contain;
+        background-repeat: no-repeat;
+        &--startButton{
+            position: absolute;
+            top: calc(50% - 50px);
+            left: calc(50% - 112px);
+            background: none;
+            border: none;
+            font-family: 'Casino';
+            background: $headerFontColor;
+            background-clip: border-box;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 80px;
+            transition: 0.2s all;
+        }
+    }
+}

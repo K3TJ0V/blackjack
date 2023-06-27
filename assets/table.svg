@@ -1,0 +1,16 @@
+<svg width="300" height="600" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <!-- Tabletop -->
+ <defs>
+  <pattern id="tableTexture" width="200" height="80" patternUnits="userSpaceOnUse" patternTransform="matrix(0.45679011940956116,0,0,0.7459239304404441,-66.51852416992188,-73.1576108317795)">
+   <rect width="200" height="80" fill="#8B4513" id="svg_1"/>
+   <line x1="0" y1="0" x2="0" y2="80" stroke="#A0522D" stroke-width="8" id="svg_2"/>
+   <line x1="100" y1="0" x2="100" y2="80" stroke="#A0522D" stroke-width="8" id="svg_3"/>
+   <line x1="200" y1="0" x2="200" y2="80" stroke="#A0522D" stroke-width="8" id="svg_4"/>
+  </pattern>
+ </defs>
+ <!-- Table edges -->
+ <g>
+  <title>Layer 1</title>
+  <rect stroke="#000" x="2" y="1.43478" width="296.00002" height="596.73913" fill="url(#tableTexture)" stroke-width="4" id="svg_5"/>
+ </g>
+</svg>
