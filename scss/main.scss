@@ -1,5 +1,6 @@
-$backgroundColor: radial-gradient(circle, rgb(160, 215, 158) 0%, rgba(4,97,0,1) 79%)  rgb(134,181,132);
+$backgroundColor: radial-gradient(circle, rgb(160, 215, 158) 0%, #046100 79%)  #86b584;
 $headerFontColor: #DCEB0C linear-gradient(to top, #eeff00 0%, #ff6a00 100%);
+$buttonBackground: radial-gradient(circle, rgb(72, 148, 70) 0%, #034d00 79%)  #86b584;
 body{
     width: 100vw;
     height: 100vh;
@@ -22,11 +23,56 @@ body{
 }
 .main{
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 80%;
+    &__buttons{
+        position: relative;
+        box-sizing: border-box;
+        width: 100%;
+        height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        margin-top: 30px;
+        &--cash{
+            position: absolute;
+            color: #fff;
+            font-family: 'Casino';
+            top: -55px;
+            font-size: 50px;
+            transition: 0.2s all;
+            transform: scale(0);
+        }
+        &--hit, &--pass{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Casino';
+            border: 5px solid#023c00;
+            background: $buttonBackground;
+            padding: 10px;
+            border-radius: 16px;
+            width: 120px;
+            height: 80px;
+            transition: 0.2s all;
+            transform: scale(0);
+            opacity: 0.4;
+            &-p{
+                font-size: 43px;
+                background: $headerFontColor;
+                background-clip: border-box;
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+        }
+    }
     &__table{
         position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
         width: 300px;
         height: 600px;
         background-image: url(../assets/table.svg);
@@ -48,7 +94,6 @@ body{
         }
     }
 }
-
 .table__botSide , .table__playerSide{
     box-sizing: border-box;
     padding: 5px;
@@ -56,17 +101,17 @@ body{
     height: 120px;
     display: flex;
     justify-content: center;
+    padding: 0;
+    transition: 0.3s all;
 }
-
-.table__playerSide{
-    position: absolute;
-    top: calc(100% - 120px);
-}
-
 .card{
     width: 80px;
     height: 110px;
     background-image: url(../assets/clubs_2.svg);
     background-size: contain;
     background-repeat: no-repeat;
+}
+.cardHoldersActivated{
+    border: 5px rgb(0, 0, 0) solid;
+    box-shadow: inset 5px 5px 15px black, inset -5px -5px 15px black ;
 }
