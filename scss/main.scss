@@ -27,6 +27,60 @@ body{
     align-items: center;
     justify-content: center;
     height: 80%;
+    &__bet{
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-around;
+        width: 80%;   
+        height: 50%;
+        border: 2px white solid;
+        background-color: rgba(0, 0, 0, 0.694);
+        box-shadow: inset 5px 5px 10px white, inset -5px -5px 10px white;
+        border-radius: 20px;
+        &--betButtons{
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            grid-template-rows: 50px 50px 50px;
+            gap: 2px;
+        }
+        &--betButtons > *{
+            background: none;
+            color: #fff;
+            font-size: 20px;
+            padding: 0;
+            border: 2px white solid;
+            transition: 0.2s all;
+        }
+        &--amount{
+            background: none;
+            color: #fff;
+            border: 2px white solid;
+            border-radius: 10px;
+            padding: 10px;
+            width: 60%;
+            text-align: center;
+            font-size: 30px;
+            font-weight: bold;
+        }
+        &--apply{
+            background: none;
+            color: #fff;
+            font-weight: bold;
+            font-size: 30px;
+            border: 2px white solid;
+            border-radius: 10px;
+            padding: 10px;
+            width: 30%;
+            transition: 0.2s all
+        }
+        &--apply:focus, &--betButtons > *:focus{
+            color: black;
+            background-color: white;
+            border: 2px black solid;
+        }
+    }
     &__buttons{
         position: relative;
         box-sizing: border-box;
