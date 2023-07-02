@@ -19,28 +19,38 @@ let betValue = 0;
 let maxBetValue = parseInt(cash.innerHTML.substring(1, cash.innerHTML.length));
 // creating deck of cards
 let deck = [];
-let higherCardRanks = ['A','J','Q',"K"];
+let higherCardRanks = ['ace','jack','queen',"king"];
 class Card{
-    constructor(rank,value,color){
+    constructor(rank,value,color, imgURL){
         this.rank = rank;
         this.value = value;
         this.color = color;
+        this.imgURL = imgURL;
     }
 }
+// shuffling function
+function shuffleDeck(deck) {
+    for (let i = deck.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [deck[i], deck[j]] = [deck[j], deck[i]];
+    }
+  }
+// function to create new deck
+function deckCreation(){
 for (let i = 2; i < 16; i++) {
     if(i < 11){
         // creating lower ranked cards 1-10
-        deck.push(new Card(i, i, 'heart'));
-        deck.push(new Card(i, i, 'clubs'));
-        deck.push(new Card(i, i, 'diamond'));
-        deck.push(new Card(i, i, 'spades'));
+        deck.push(new Card(i, i, 'heart', 'heart' + '_' + i));
+        deck.push(new Card(i, i, 'clubs', 'clubs' + '_' + i));
+        deck.push(new Card(i, i, 'diamond', 'diamonds' + '_' + i));
+        deck.push(new Card(i, i, 'spades', 'spades' + '_' + i));
     }else if(i > 11){
         if (higherCardRanks[i-12] != 'A') {
             // creating higher ranked cards without ace in this block
-            deck.push(new Card(higherCardRanks[i-12], 10, 'heart'));
-            deck.push(new Card(higherCardRanks[i-12], 10, 'clubs'));
-            deck.push(new Card(higherCardRanks[i-12], 10, 'diamond'));
-            deck.push(new Card(higherCardRanks[i-12], 10, 'spades'));
+            deck.push(new Card(higherCardRanks[i-12], 10, 'heart','heart' + '_' +  higherCardRanks[i-12]));
+            deck.push(new Card(higherCardRanks[i-12], 10, 'clubs','clubs' + '_' +  higherCardRanks[i-12]));
+            deck.push(new Card(higherCardRanks[i-12], 10, 'diamond','diamonds' + '_' +  higherCardRanks[i-12]));
+            deck.push(new Card(higherCardRanks[i-12], 10, 'spades','spades' + '_' +  higherCardRanks[i-12]));
         }else{
             // adding aces with different value
             deck.push(new Card(higherCardRanks[i-12], 11, 'heart'));
@@ -49,8 +59,7 @@ for (let i = 2; i < 16; i++) {
             deck.push(new Card(higherCardRanks[i-12], 11, 'spades'));
         }
     }
-}
-console.log(deck);
+}}
 
 startButton.addEventListener('click', ()=>{
     startButton.style.transform = 'scale(0)';
@@ -125,4 +134,10 @@ clearingBet.addEventListener('click', ()=>{
 })
 betApplyButton.addEventListener('click', ()=>{
     betButtonsContainer.style.transform = 'scale(0)';
+    let newCard = cardTemplate.content.cloneNode(true);
+    let x = newCard.querySelector('.card');
+    let y = new URL('../assets/clubs_2.svg', import.meta.url);
+    x.src = y;
+    playerSide.appendChild(x)
 })
+
