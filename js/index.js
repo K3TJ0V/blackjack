@@ -1,5 +1,6 @@
 import "normalize.css";
-import "../scss/main.scss"
+import "../scss/main.scss";
+import * as images from './imagesURLs';
 
 const startButton = document.querySelector('.startButton-js');
 const playerSide = document.querySelector('.playerSide--js');
@@ -40,26 +41,46 @@ function deckCreation(){
 for (let i = 2; i < 16; i++) {
     if(i < 11){
         // creating lower ranked cards 1-10
-        deck.push(new Card(i, i, 'heart', 'heart' + '_' + i));
+        deck.push(new Card(i, i, 'heart', 'hearts' + '_' + i));
         deck.push(new Card(i, i, 'clubs', 'clubs' + '_' + i));
         deck.push(new Card(i, i, 'diamond', 'diamonds' + '_' + i));
         deck.push(new Card(i, i, 'spades', 'spades' + '_' + i));
     }else if(i > 11){
         if (higherCardRanks[i-12] != 'A') {
             // creating higher ranked cards without ace in this block
-            deck.push(new Card(higherCardRanks[i-12], 10, 'heart','heart' + '_' +  higherCardRanks[i-12]));
+            deck.push(new Card(higherCardRanks[i-12], 10, 'hearts','hearts' + '_' +  higherCardRanks[i-12]));
             deck.push(new Card(higherCardRanks[i-12], 10, 'clubs','clubs' + '_' +  higherCardRanks[i-12]));
             deck.push(new Card(higherCardRanks[i-12], 10, 'diamond','diamonds' + '_' +  higherCardRanks[i-12]));
             deck.push(new Card(higherCardRanks[i-12], 10, 'spades','spades' + '_' +  higherCardRanks[i-12]));
         }else{
             // adding aces with different value
-            deck.push(new Card(higherCardRanks[i-12], 11, 'heart'));
+            deck.push(new Card(higherCardRanks[i-12], 11, 'hearts'));
             deck.push(new Card(higherCardRanks[i-12], 11, 'clubs'));
             deck.push(new Card(higherCardRanks[i-12], 11, 'diamond'));
             deck.push(new Card(higherCardRanks[i-12], 11, 'spades'));
         }
     }
 }}
+
+function startOfTheGame(){
+    let startCards = [];
+    let firstBotCard = deck.shift();
+    let secondBotCard = deck.shift();
+    let firstPlayerCard = deck.shift();
+    let secondPlayerCard = deck.shift();
+    startCards.push(firstBotCard, secondBotCard, firstPlayerCard, secondPlayerCard);
+    
+    for (let i = 0; i < 4; i++) {
+        let newCard = cardTemplate.content.cloneNode(true);
+        let img = newCard.querySelector('.card');
+        img.src = startCards[i].imgURL;
+        if(i < 2){
+            playerSide.appendChild(img);
+        } else{
+            botSide.appendChild(img);
+        }
+    }
+}
 
 startButton.addEventListener('click', ()=>{
     startButton.style.transform = 'scale(0)';
@@ -133,11 +154,14 @@ clearingBet.addEventListener('click', ()=>{
     betChosenAmount.innerHTML = betValue;
 })
 betApplyButton.addEventListener('click', ()=>{
+    if(betValue == 0){
+        return;
+    }
     betButtonsContainer.style.transform = 'scale(0)';
-    let newCard = cardTemplate.content.cloneNode(true);
-    let x = newCard.querySelector('.card');
-    let y = new URL('../assets/clubs_2.svg', import.meta.url);
-    x.src = y;
-    playerSide.appendChild(x)
+    deckCreation();
+    deck.forEach((card)=>{
+        card.imgURL = images.default[card.imgURL];
+    })
+    shuffleDeck(deck);
+    startOfTheGame();
 })
-
