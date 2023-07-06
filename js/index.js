@@ -173,6 +173,8 @@ betApplyButton.addEventListener('click', ()=>{
     betButtonsContainer.style.transform = 'scale(0)';
     balance = balance - parseInt(betChosenAmount.innerHTML);
     cash.innerHTML = '$' + balance;
+    maxBet = balance;
+    betChosenAmount.innerHTML = 0;
     deckCreation();
     deck.forEach((card)=>{
         card.imgURL = images.default[card.imgURL];
@@ -187,9 +189,11 @@ hitButton.addEventListener('click', ()=>{
     let img = newCard.querySelector('.card');
     img.src = newHittedCard.imgURL;
     playerCardsValue += newHittedCard.value;
+
     if (playerCardsValue > 21) {
         lostScreen.style.transform = 'scale(1)';
         setTimeout(() => {
+            // reseting game memory and going back to the beginning
             lostScreen.style.transform = 'scale(0)';
             playerSide.innerHTML = 0;
             botSide.innerHTML = 0;
@@ -200,4 +204,8 @@ hitButton.addEventListener('click', ()=>{
         }, 3000);
     }
     playerSide.appendChild(img);
+})
+
+passButton.addEventListener('click', ()=>{
+
 })
