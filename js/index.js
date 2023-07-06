@@ -14,13 +14,21 @@ const clearingBet = document.querySelector('.betButton__0');
 const maxBetButton = document.querySelector('.betButton__MAX');
 const betButtonsContainer = document.querySelector('.main__bet');
 const betApplyButton = document.querySelector('.main__bet--apply');
+const lostScreen = document.querySelector('.lostScreen');
+const wonScreen = document.querySelector('.wonScreen');
+
+let balance = parseInt(cash.innerHTML.substring(1, cash.innerHTML.length));
 
 let betButtons = [];
 let betValue = 0;
-let maxBetValue = parseInt(cash.innerHTML.substring(1, cash.innerHTML.length));
+let maxBet = parseInt(cash.innerHTML.substring(1, cash.innerHTML.length));
 // creating deck of cards
 let deck = [];
 let higherCardRanks = ['ace','jack','queen',"king"];
+// board value containers
+let botCardsValue = 0;
+let playerCardsValue = 0;
+
 class Card{
     constructor(rank,value,color, imgURL){
         this.rank = rank;
@@ -65,9 +73,13 @@ for (let i = 2; i < 16; i++) {
 function startOfTheGame(){
     let startCards = [];
     let firstBotCard = deck.shift();
+    botCardsValue += firstBotCard.value;
     let secondBotCard = deck.shift();
+    botCardsValue += secondBotCard.value;
     let firstPlayerCard = deck.shift();
+    playerCardsValue += firstPlayerCard.value;
     let secondPlayerCard = deck.shift();
+    playerCardsValue += secondPlayerCard.value;
     startCards.push(firstBotCard, secondBotCard, firstPlayerCard, secondPlayerCard);
     
     for (let i = 0; i < 4; i++) {
@@ -75,9 +87,9 @@ function startOfTheGame(){
         let img = newCard.querySelector('.card');
         img.src = startCards[i].imgURL;
         if(i < 2){
-            playerSide.appendChild(img);
-        } else{
             botSide.appendChild(img);
+        } else{
+            playerSide.appendChild(img);
         }
     }
 }
@@ -102,6 +114,7 @@ startButton.addEventListener('click', ()=>{
         betButtonsContainer.style.transform = 'scale(1)';
     }, 2000);
 }) 
+
 // donwloading all bet buttons
 for (let i = 1; i < 1001; i = i * 10) {
     let x = document.querySelector('.betButton__add' +i);
@@ -133,8 +146,8 @@ betButtons.forEach((button) =>{
             let x = parseInt(buttonValue);
             let newValue = betValue + x;
             // error handling (can't set value that's out of balance)
-            if(newValue > maxBetValue){
-                newValue = maxBetValue;
+            if(newValue > maxBet){
+                newValue = maxBet;
                 betValue = newValue;
                 betChosenAmount.innerText = newValue;
                 return newValue;
@@ -146,7 +159,7 @@ betButtons.forEach((button) =>{
 })
 // the rest buttons logic clearing bet and setting max value available 
 maxBetButton.addEventListener('click', ()=>{
-    betValue = maxBetValue;
+    betValue = maxBet;
     betChosenAmount.innerHTML = betValue;
 })
 clearingBet.addEventListener('click', ()=>{
@@ -158,10 +171,33 @@ betApplyButton.addEventListener('click', ()=>{
         return;
     }
     betButtonsContainer.style.transform = 'scale(0)';
+    balance = balance - parseInt(betChosenAmount.innerHTML);
+    cash.innerHTML = '$' + balance;
     deckCreation();
     deck.forEach((card)=>{
         card.imgURL = images.default[card.imgURL];
     })
     shuffleDeck(deck);
     startOfTheGame();
+})
+
+hitButton.addEventListener('click', ()=>{
+    let newHittedCard = deck.shift();
+    let newCard = cardTemplate.content.cloneNode(true);
+    let img = newCard.querySelector('.card');
+    img.src = newHittedCard.imgURL;
+    playerCardsValue += newHittedCard.value;
+    if (playerCardsValue > 21) {
+        lostScreen.style.transform = 'scale(1)';
+        setTimeout(() => {
+            lostScreen.style.transform = 'scale(0)';
+            playerSide.innerHTML = 0;
+            botSide.innerHTML = 0;
+            playerCardsValue = 0;
+            botCardsValue = 0;
+            deck = [];
+            betButtonsContainer.style.transform = 'scale(1)';
+        }, 3000);
+    }
+    playerSide.appendChild(img);
 })

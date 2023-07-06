@@ -169,3 +169,30 @@ body{
     border: 5px rgb(0, 0, 0) solid;
     box-shadow: inset 5px 5px 15px black, inset -5px -5px 15px black ;
 }
+
+.lostScreen, .winScreen{
+    position: absolute;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    font-size: 50px;
+    transform: scale(0);
+    transition: 0.2s all;
+    &__background{
+        position: absolute;
+        top: 0;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(0, 0, 0, 0.607);
+    }
+    &__text{
+        font-family: 'Casino';
+        background: $headerFontColor;
+        background-clip: border-box;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+}
