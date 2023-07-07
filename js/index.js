@@ -15,13 +15,15 @@ const maxBetButton = document.querySelector('.betButton__MAX');
 const betButtonsContainer = document.querySelector('.main__bet');
 const betApplyButton = document.querySelector('.main__bet--apply');
 const lostScreen = document.querySelector('.lostScreen');
-const wonScreen = document.querySelector('.wonScreen');
+const winScreen = document.querySelector('.winScreen');
 
 let balance = parseInt(cash.innerHTML.substring(1, cash.innerHTML.length));
 
+let maxCardValue = 0;
+
 let betButtons = [];
 let betValue = 0;
-let maxBet = parseInt(cash.innerHTML.substring(1, cash.innerHTML.length));
+let maxBet = balance;
 // creating deck of cards
 let deck = [];
 let higherCardRanks = ['ace','jack','queen',"king"];
@@ -91,6 +93,61 @@ function startOfTheGame(){
         } else{
             playerSide.appendChild(img);
         }
+    }
+}
+function correctCardsPicker(deckOfCards, highEnd){
+    let possibleCards = [];
+    deckOfCards.forEach((card)=>{console.log();
+        if (card.value <= highEnd) {
+            possibleCards.push(card);
+        }
+    })
+    return possibleCards;
+  }
+
+  function calculateBotChances(highEnd){
+    let randomShot = Math.random();
+    let possibleCards = correctCardsPicker(deck, highEnd);
+    let probability =  possibleCards.length / deck.length;
+
+    if (probability >= randomShot) {
+        let newHittedCard = deck.shift();
+        let newCard = cardTemplate.content.cloneNode(true);
+        let img = newCard.querySelector('.card');
+        img.src = newHittedCard.imgURL;
+        botCardsValue += newHittedCard.value;
+        maxCardValue = 21 - botCardsValue;
+        botSide.appendChild(img);
+
+        if (botCardsValue > 21) {
+            winScreen.style.transform = 'scale(1)';
+            setTimeout(() => {
+                // reseting game memory and going back to the beginning
+                winScreen.style.transform = 'scale(0)';
+                playerSide.innerHTML = '';
+                botSide.innerHTML = '';
+                playerCardsValue = 0;
+                botCardsValue = 0;
+                deck = [];
+                betButtonsContainer.style.transform = 'scale(1)';
+            }, 30000);
+            return "end";
+        }
+        return "repeat";
+    }
+    console.log("koniec");
+    return "end";
+    }
+  
+
+function botTurn(){
+    maxCardValue = 21 - botCardsValue;
+    let x = calculateBotChances(maxCardValue);
+    console.log(x);
+    if (x == "repeat") {
+        calculateBotChances(maxCardValue);
+    }else if(x == "end"){
+        return;
     }
 }
 
@@ -175,6 +232,7 @@ betApplyButton.addEventListener('click', ()=>{
     cash.innerHTML = '$' + balance;
     maxBet = balance;
     betChosenAmount.innerHTML = 0;
+    betValue = 0;
     deckCreation();
     deck.forEach((card)=>{
         card.imgURL = images.default[card.imgURL];
@@ -189,6 +247,7 @@ hitButton.addEventListener('click', ()=>{
     let img = newCard.querySelector('.card');
     img.src = newHittedCard.imgURL;
     playerCardsValue += newHittedCard.value;
+    playerSide.appendChild(img);
 
     if (playerCardsValue > 21) {
         lostScreen.style.transform = 'scale(1)';
@@ -201,11 +260,39 @@ hitButton.addEventListener('click', ()=>{
             botCardsValue = 0;
             deck = [];
             betButtonsContainer.style.transform = 'scale(1)';
-        }, 3000);
+        }, 30000);
     }
-    playerSide.appendChild(img);
 })
 
 passButton.addEventListener('click', ()=>{
-
+    botTurn();
+    console.log('sprawdzam');
+    if (botCardsValue > playerCardsValue) {
+        lostScreen.style.transform = 'scale(1)';
+        setTimeout(() => {
+            // reseting game memory and going back to the beginning
+            lostScreen.style.transform = 'scale(0)';
+            playerSide.innerHTML = '';
+            botSide.innerHTML = '';
+            playerCardsValue = 0;
+            botCardsValue = 0;
+            deck = [];
+            betButtonsContainer.style.transform = 'scale(1)';
+        }, 30000);
+    }else if(playerCardsValue > botCardsValue){
+        winScreen.style.transform = 'scale(1)';
+        setTimeout(() => {
+            // reseting game memory and going back to the beginning
+            winScreen.style.transform = 'scale(0)';
+            playerSide.innerHTML = '';
+            botSide.innerHTML = '';
+            playerCardsValue = 0;
+            botCardsValue = 0;
+            deck = [];
+            betButtonsContainer.style.transform = 'scale(1)';
+        }, 30000);
+    }
+    else{
+        console.log('its a tie');
+    }
 })
