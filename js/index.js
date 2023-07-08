@@ -14,8 +14,9 @@ const clearingBet = document.querySelector('.betButton__0');
 const maxBetButton = document.querySelector('.betButton__MAX');
 const betButtonsContainer = document.querySelector('.main__bet');
 const betApplyButton = document.querySelector('.main__bet--apply');
-const lostScreen = document.querySelector('.lostScreen');
+const loseScreen = document.querySelector('.loseScreen');
 const winScreen = document.querySelector('.winScreen');
+const tieScreen = document.querySelector('.tieScreen');
 
 let balance = parseInt(cash.innerHTML.substring(1, cash.innerHTML.length));
 
@@ -71,7 +72,15 @@ for (let i = 2; i < 16; i++) {
         }
     }
 }}
-
+function hitCard(side, cardsValue){
+    let newHittedCard = deck.shift();
+    let newCard = cardTemplate.content.cloneNode(true);
+    let img = newCard.querySelector('.card');
+    img.src = newHittedCard.imgURL;
+    cardsValue += newHittedCard.value;
+    side.appendChild(img);
+    return cardsValue;
+}
 function startOfTheGame(){
     let startCards = [];
     let firstBotCard = deck.shift();
@@ -95,9 +104,50 @@ function startOfTheGame(){
         }
     }
 }
+
+function gameWin(){
+    winScreen.style.transform = 'scale(1)';
+            setTimeout(() => {
+                // reseting game memory and going back to the beginning
+                winScreen.style.transform = 'scale(0)';
+                playerSide.innerHTML = '';
+                botSide.innerHTML = '';
+                playerCardsValue = 0;
+                botCardsValue = 0;
+                deck = [];
+                betButtonsContainer.style.transform = 'scale(1)';
+            }, 3000);
+}
+function gameLose(){
+    loseScreen.style.transform = 'scale(1)';
+        setTimeout(() => {
+            // reseting game memory and going back to the beginning
+            loseScreen.style.transform = 'scale(0)';
+            playerSide.innerHTML = '';
+            botSide.innerHTML = '';
+            playerCardsValue = 0;
+            botCardsValue = 0;
+            deck = [];
+            betButtonsContainer.style.transform = 'scale(1)';
+        }, 3000);
+}
+function gameTie(){
+    tieScreen.style.transform = 'scale(1)';
+        setTimeout(() => {
+            // reseting game memory and going back to the beginning
+            tieScreen.style.transform = 'scale(0)';
+            playerSide.innerHTML = '';
+            botSide.innerHTML = '';
+            playerCardsValue = 0;
+            botCardsValue = 0;
+            deck = [];
+            betButtonsContainer.style.transform = 'scale(1)';
+        }, 3000);
+}
+
 function correctCardsPicker(deckOfCards, highEnd){
     let possibleCards = [];
-    deckOfCards.forEach((card)=>{console.log();
+    deckOfCards.forEach((card)=>{
         if (card.value <= highEnd) {
             possibleCards.push(card);
         }
@@ -109,47 +159,36 @@ function correctCardsPicker(deckOfCards, highEnd){
     let randomShot = Math.random();
     let possibleCards = correctCardsPicker(deck, highEnd);
     let probability =  possibleCards.length / deck.length;
-
-    if (probability >= randomShot) {
-        let newHittedCard = deck.shift();
-        let newCard = cardTemplate.content.cloneNode(true);
-        let img = newCard.querySelector('.card');
-        img.src = newHittedCard.imgURL;
-        botCardsValue += newHittedCard.value;
-        maxCardValue = 21 - botCardsValue;
-        botSide.appendChild(img);
-
+    if(playerCardsValue > botCardsValue){
+        let hitting = hitCard(botSide, botCardsValue);
+        botCardsValue = hitting;
         if (botCardsValue > 21) {
-            winScreen.style.transform = 'scale(1)';
-            setTimeout(() => {
-                // reseting game memory and going back to the beginning
-                winScreen.style.transform = 'scale(0)';
-                playerSide.innerHTML = '';
-                botSide.innerHTML = '';
-                playerCardsValue = 0;
-                botCardsValue = 0;
-                deck = [];
-                betButtonsContainer.style.transform = 'scale(1)';
-            }, 30000);
+            return "end";
+        }
+        return 'repeat';
+    }
+    if (probability >= randomShot) {
+        let hitting = hitCard(botSide, botCardsValue);
+        botCardsValue = hitting;
+        if (botCardsValue > 21) {
             return "end";
         }
         return "repeat";
     }
-    console.log("koniec");
     return "end";
     }
   
 
 function botTurn(){
     maxCardValue = 21 - botCardsValue;
-    let x = calculateBotChances(maxCardValue);
-    console.log(x);
-    if (x == "repeat") {
+    let startBotRound = calculateBotChances(maxCardValue);
+    if (startBotRound == "repeat") {
         calculateBotChances(maxCardValue);
-    }else if(x == "end"){
+    }else if(startBotRound == "end"){
         return;
     }
 }
+
 
 startButton.addEventListener('click', ()=>{
     startButton.style.transform = 'scale(0)';
@@ -242,57 +281,23 @@ betApplyButton.addEventListener('click', ()=>{
 })
 
 hitButton.addEventListener('click', ()=>{
-    let newHittedCard = deck.shift();
-    let newCard = cardTemplate.content.cloneNode(true);
-    let img = newCard.querySelector('.card');
-    img.src = newHittedCard.imgURL;
-    playerCardsValue += newHittedCard.value;
-    playerSide.appendChild(img);
-
+    let hitting = hitCard(playerSide, playerCardsValue);
+    playerCardsValue = hitting;
     if (playerCardsValue > 21) {
-        lostScreen.style.transform = 'scale(1)';
-        setTimeout(() => {
-            // reseting game memory and going back to the beginning
-            lostScreen.style.transform = 'scale(0)';
-            playerSide.innerHTML = 0;
-            botSide.innerHTML = 0;
-            playerCardsValue = 0;
-            botCardsValue = 0;
-            deck = [];
-            betButtonsContainer.style.transform = 'scale(1)';
-        }, 30000);
+        gameLose();
     }
 })
 
 passButton.addEventListener('click', ()=>{
     botTurn();
-    console.log('sprawdzam');
-    if (botCardsValue > playerCardsValue) {
-        lostScreen.style.transform = 'scale(1)';
-        setTimeout(() => {
-            // reseting game memory and going back to the beginning
-            lostScreen.style.transform = 'scale(0)';
-            playerSide.innerHTML = '';
-            botSide.innerHTML = '';
-            playerCardsValue = 0;
-            botCardsValue = 0;
-            deck = [];
-            betButtonsContainer.style.transform = 'scale(1)';
-        }, 30000);
+    if(botCardsValue > 21){
+        gameWin();
+    }else if (botCardsValue > playerCardsValue) {
+       gameLose();
     }else if(playerCardsValue > botCardsValue){
-        winScreen.style.transform = 'scale(1)';
-        setTimeout(() => {
-            // reseting game memory and going back to the beginning
-            winScreen.style.transform = 'scale(0)';
-            playerSide.innerHTML = '';
-            botSide.innerHTML = '';
-            playerCardsValue = 0;
-            botCardsValue = 0;
-            deck = [];
-            betButtonsContainer.style.transform = 'scale(1)';
-        }, 30000);
+        gameWin()
     }
     else{
-        console.log('its a tie');
+        gameTie();
     }
 })
