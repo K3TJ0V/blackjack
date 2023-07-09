@@ -72,6 +72,7 @@ for (let i = 2; i < 16; i++) {
         }
     }
 }}
+// standalone function to hit card so the code looks more elegant :)
 function hitCard(side, cardsValue){
     let newHittedCard = deck.shift();
     let newCard = cardTemplate.content.cloneNode(true);
@@ -81,6 +82,7 @@ function hitCard(side, cardsValue){
     side.appendChild(img);
     return cardsValue;
 }
+// first function to start a round loop
 function startOfTheGame(){
     let startCards = [];
     let firstBotCard = deck.shift();
@@ -92,7 +94,7 @@ function startOfTheGame(){
     let secondPlayerCard = deck.shift();
     playerCardsValue += secondPlayerCard.value;
     startCards.push(firstBotCard, secondBotCard, firstPlayerCard, secondPlayerCard);
-    
+    // first draw, appending first 2 cards each side
     for (let i = 0; i < 4; i++) {
         let newCard = cardTemplate.content.cloneNode(true);
         let img = newCard.querySelector('.card');
@@ -104,7 +106,7 @@ function startOfTheGame(){
         }
     }
 }
-
+// declaring final result of the game functions
 function gameWin(){
     winScreen.style.transform = 'scale(1)';
             setTimeout(() => {
@@ -144,7 +146,9 @@ function gameTie(){
             betButtonsContainer.style.transform = 'scale(1)';
         }, 3000);
 }
-
+/* counting how many cards could fit in botSide, 
+   returning an array of all possibilities
+*/
 function correctCardsPicker(deckOfCards, highEnd){
     let possibleCards = [];
     deckOfCards.forEach((card)=>{
@@ -155,7 +159,7 @@ function correctCardsPicker(deckOfCards, highEnd){
     return possibleCards;
   }
 
-  function calculateBotChances(highEnd){
+  function botInteligence(highEnd){
     let randomShot = Math.random();
     let possibleCards = correctCardsPicker(deck, highEnd);
     let probability =  possibleCards.length / deck.length;
@@ -166,6 +170,8 @@ function correctCardsPicker(deckOfCards, highEnd){
             return "end";
         }
         return 'repeat';
+    }else if(botCardsValue > playerCardsValue){
+        return "end";
     }
     if (probability >= randomShot) {
         let hitting = hitCard(botSide, botCardsValue);
@@ -181,9 +187,9 @@ function correctCardsPicker(deckOfCards, highEnd){
 
 function botTurn(){
     maxCardValue = 21 - botCardsValue;
-    let startBotRound = calculateBotChances(maxCardValue);
+    let startBotRound = botInteligence(maxCardValue);
     if (startBotRound == "repeat") {
-        calculateBotChances(maxCardValue);
+        botInteligence(maxCardValue);
     }else if(startBotRound == "end"){
         return;
     }
