@@ -31,7 +31,8 @@ let higherCardRanks = ['ace','jack','queen',"king"];
 // board value containers
 let botCardsValue = 0;
 let playerCardsValue = 0;
-
+// reverted bot card
+let revertBotCard;
 class Card{
     constructor(rank,value,color, imgURL){
         this.rank = rank;
@@ -52,20 +53,20 @@ function deckCreation(){
 for (let i = 2; i < 16; i++) {
     if(i < 11){
         // creating lower ranked cards 1-10
-        deck.push(new Card(i, i, 'heart', 'hearts' + '_' + i));
+        deck.push(new Card(i, i, 'heart', 'heart' + '_' + i));
         deck.push(new Card(i, i, 'clubs', 'clubs' + '_' + i));
         deck.push(new Card(i, i, 'diamond', 'diamonds' + '_' + i));
         deck.push(new Card(i, i, 'spades', 'spades' + '_' + i));
     }else if(i > 11){
         if (higherCardRanks[i-12] != 'A') {
             // creating higher ranked cards without ace in this block
-            deck.push(new Card(higherCardRanks[i-12], 10, 'hearts','hearts' + '_' +  higherCardRanks[i-12]));
+            deck.push(new Card(higherCardRanks[i-12], 10, 'heart','heart' + '_' +  higherCardRanks[i-12]));
             deck.push(new Card(higherCardRanks[i-12], 10, 'clubs','clubs' + '_' +  higherCardRanks[i-12]));
             deck.push(new Card(higherCardRanks[i-12], 10, 'diamond','diamonds' + '_' +  higherCardRanks[i-12]));
             deck.push(new Card(higherCardRanks[i-12], 10, 'spades','spades' + '_' +  higherCardRanks[i-12]));
         }else{
             // adding aces with different value
-            deck.push(new Card(higherCardRanks[i-12], 11, 'hearts'));
+            deck.push(new Card(higherCardRanks[i-12], 11, 'heart'));
             deck.push(new Card(higherCardRanks[i-12], 11, 'clubs'));
             deck.push(new Card(higherCardRanks[i-12], 11, 'diamond'));
             deck.push(new Card(higherCardRanks[i-12], 11, 'spades'));
@@ -84,17 +85,20 @@ function hitCard(side, cardsValue){
 }
 // first function to start a round loop
 function startOfTheGame(){
+    // first draw
     let startCards = [];
     let firstBotCard = deck.shift();
     botCardsValue += firstBotCard.value;
     let secondBotCard = deck.shift();
     botCardsValue += secondBotCard.value;
+    revertBotCard = {...secondBotCard}; 
+    secondBotCard.imgURL = images.default['revert'];
     let firstPlayerCard = deck.shift();
     playerCardsValue += firstPlayerCard.value;
     let secondPlayerCard = deck.shift();
     playerCardsValue += secondPlayerCard.value;
     startCards.push(firstBotCard, secondBotCard, firstPlayerCard, secondPlayerCard);
-    // first draw, appending first 2 cards each side
+    //appending first 2 cards each side
     for (let i = 0; i < 4; i++) {
         let newCard = cardTemplate.content.cloneNode(true);
         let img = newCard.querySelector('.card');
@@ -118,7 +122,7 @@ function gameWin(){
                 botCardsValue = 0;
                 deck = [];
                 betButtonsContainer.style.transform = 'scale(1)';
-            }, 3000);
+            }, 30000);
 }
 function gameLose(){
     loseScreen.style.transform = 'scale(1)';
@@ -131,7 +135,7 @@ function gameLose(){
             botCardsValue = 0;
             deck = [];
             betButtonsContainer.style.transform = 'scale(1)';
-        }, 3000);
+        }, 30000);
 }
 function gameTie(){
     tieScreen.style.transform = 'scale(1)';
@@ -144,7 +148,7 @@ function gameTie(){
             botCardsValue = 0;
             deck = [];
             betButtonsContainer.style.transform = 'scale(1)';
-        }, 3000);
+        }, 30000);
 }
 /* counting how many cards could fit in botSide, 
    returning an array of all possibilities
@@ -158,11 +162,12 @@ function correctCardsPicker(deckOfCards, highEnd){
     })
     return possibleCards;
   }
-
+// full bot turn
   function botInteligence(highEnd){
     let randomShot = Math.random();
     let possibleCards = correctCardsPicker(deck, highEnd);
     let probability =  possibleCards.length / deck.length;
+    // logical move. if you lose, you obviously hit card to try to win
     if(playerCardsValue > botCardsValue){
         let hitting = hitCard(botSide, botCardsValue);
         botCardsValue = hitting;
@@ -173,6 +178,7 @@ function correctCardsPicker(deckOfCards, highEnd){
     }else if(botCardsValue > playerCardsValue){
         return "end";
     }
+    // bot picking if its profitable to risk hitting a card
     if (probability >= randomShot) {
         let hitting = hitCard(botSide, botCardsValue);
         botCardsValue = hitting;
@@ -186,6 +192,12 @@ function correctCardsPicker(deckOfCards, highEnd){
   
 
 function botTurn(){
+    botSide.lastChild.remove();
+    let newCard = cardTemplate.content.cloneNode(true);
+    let img = newCard.querySelector('.card');
+    img.src = images.default[revertBotCard.color + '_' + revertBotCard.rank];
+    botSide.appendChild(img);
+
     maxCardValue = 21 - botCardsValue;
     let startBotRound = botInteligence(maxCardValue);
     if (startBotRound == "repeat") {

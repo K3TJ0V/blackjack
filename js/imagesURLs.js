@@ -38,19 +38,20 @@ const images = {
     'spades_queen': new URL('../assets/spades_queen.svg', import.meta.url),
     'spades_king': new URL('../assets/spades_king.svg', import.meta.url),
     'spades_ace': new URL('../assets/spades_ace.svg', import.meta.url),
-    'hearts_2' : new URL('../assets/hearts_2.svg', import.meta.url),
-    'hearts_3' : new URL('../assets/hearts_3.svg', import.meta.url),
-    'hearts_4' : new URL('../assets/hearts_4.svg', import.meta.url),
-    'hearts_5' : new URL('../assets/hearts_5.svg', import.meta.url),
-    'hearts_6' : new URL('../assets/hearts_6.svg', import.meta.url),
-    'hearts_7' : new URL('../assets/hearts_7.svg', import.meta.url),
-    'hearts_8' : new URL('../assets/hearts_8.svg', import.meta.url),
-    'hearts_9' : new URL('../assets/hearts_9.svg', import.meta.url),
-    'hearts_10' : new URL('../assets/hearts_10.svg', import.meta.url),
-    'hearts_jack' : new URL('../assets/hearts_jack.svg', import.meta.url),
-    'hearts_queen' : new URL('../assets/hearts_queen.svg', import.meta.url),
-    'hearts_king' : new URL('../assets/hearts_king.svg', import.meta.url),
-    'hearts_ace' : new URL('../assets/hearts_ace.svg', import.meta.url)
+    'heart_2' : new URL('../assets/hearts_2.svg', import.meta.url),
+    'heart_3' : new URL('../assets/hearts_3.svg', import.meta.url),
+    'heart_4' : new URL('../assets/hearts_4.svg', import.meta.url),
+    'heart_5' : new URL('../assets/hearts_5.svg', import.meta.url),
+    'heart_6' : new URL('../assets/hearts_6.svg', import.meta.url),
+    'heart_7' : new URL('../assets/hearts_7.svg', import.meta.url),
+    'heart_8' : new URL('../assets/hearts_8.svg', import.meta.url),
+    'heart_9' : new URL('../assets/hearts_9.svg', import.meta.url),
+    'heart_10' : new URL('../assets/hearts_10.svg', import.meta.url),
+    'heart_jack' : new URL('../assets/hearts_jack.svg', import.meta.url),
+    'heart_queen' : new URL('../assets/hearts_queen.svg', import.meta.url),
+    'heart_king' : new URL('../assets/hearts_king.svg', import.meta.url),
+    'heart_ace' : new URL('../assets/hearts_ace.svg', import.meta.url),
+    'revert' : new URL('../assets/revert.svg', import.meta.url)
 }
 
 export default images;
