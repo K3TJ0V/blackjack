@@ -55,20 +55,20 @@ for (let i = 2; i < 16; i++) {
         // creating lower ranked cards 1-10
         deck.push(new Card(i, i, 'heart', 'heart' + '_' + i));
         deck.push(new Card(i, i, 'clubs', 'clubs' + '_' + i));
-        deck.push(new Card(i, i, 'diamond', 'diamonds' + '_' + i));
+        deck.push(new Card(i, i, 'diamonds', 'diamonds' + '_' + i));
         deck.push(new Card(i, i, 'spades', 'spades' + '_' + i));
     }else if(i > 11){
         if (higherCardRanks[i-12] != 'A') {
             // creating higher ranked cards without ace in this block
             deck.push(new Card(higherCardRanks[i-12], 10, 'heart','heart' + '_' +  higherCardRanks[i-12]));
             deck.push(new Card(higherCardRanks[i-12], 10, 'clubs','clubs' + '_' +  higherCardRanks[i-12]));
-            deck.push(new Card(higherCardRanks[i-12], 10, 'diamond','diamonds' + '_' +  higherCardRanks[i-12]));
+            deck.push(new Card(higherCardRanks[i-12], 10, 'diamonds','diamonds' + '_' +  higherCardRanks[i-12]));
             deck.push(new Card(higherCardRanks[i-12], 10, 'spades','spades' + '_' +  higherCardRanks[i-12]));
         }else{
             // adding aces with different value
             deck.push(new Card(higherCardRanks[i-12], 11, 'heart'));
             deck.push(new Card(higherCardRanks[i-12], 11, 'clubs'));
-            deck.push(new Card(higherCardRanks[i-12], 11, 'diamond'));
+            deck.push(new Card(higherCardRanks[i-12], 11, 'diamonds'));
             deck.push(new Card(higherCardRanks[i-12], 11, 'spades'));
         }
     }
@@ -82,6 +82,7 @@ function hitCard(side, cardsValue){
     cardsValue += newHittedCard.value;
     side.appendChild(img);
     return cardsValue;
+
 }
 // first function to start a round loop
 function startOfTheGame(){
@@ -91,8 +92,10 @@ function startOfTheGame(){
     botCardsValue += firstBotCard.value;
     let secondBotCard = deck.shift();
     botCardsValue += secondBotCard.value;
+    // cloning card object to save its native imgURL
     revertBotCard = {...secondBotCard}; 
     secondBotCard.imgURL = images.default['revert'];
+    //
     let firstPlayerCard = deck.shift();
     playerCardsValue += firstPlayerCard.value;
     let secondPlayerCard = deck.shift();
@@ -113,16 +116,19 @@ function startOfTheGame(){
 // declaring final result of the game functions
 function gameWin(){
     winScreen.style.transform = 'scale(1)';
-            setTimeout(() => {
-                // reseting game memory and going back to the beginning
-                winScreen.style.transform = 'scale(0)';
-                playerSide.innerHTML = '';
-                botSide.innerHTML = '';
-                playerCardsValue = 0;
-                botCardsValue = 0;
-                deck = [];
-                betButtonsContainer.style.transform = 'scale(1)';
-            }, 30000);
+    balance = balance + 2 * betValue;
+    cash.innerHTML = '$' + balance;
+        setTimeout(() => {
+            // reseting game memory and going back to the beginning
+            winScreen.style.transform = 'scale(0)';
+            playerSide.innerHTML = '';
+            botSide.innerHTML = '';
+            betValue = 0;
+            playerCardsValue = 0;
+            botCardsValue = 0;
+            deck = [];
+            betButtonsContainer.style.transform = 'scale(1)';
+        }, 3000);
 }
 function gameLose(){
     loseScreen.style.transform = 'scale(1)';
@@ -131,24 +137,27 @@ function gameLose(){
             loseScreen.style.transform = 'scale(0)';
             playerSide.innerHTML = '';
             botSide.innerHTML = '';
+            betValue = 0;
             playerCardsValue = 0;
             botCardsValue = 0;
             deck = [];
             betButtonsContainer.style.transform = 'scale(1)';
-        }, 30000);
+        }, 3000);
 }
 function gameTie(){
     tieScreen.style.transform = 'scale(1)';
+    balance = balance + betValue;
         setTimeout(() => {
             // reseting game memory and going back to the beginning
             tieScreen.style.transform = 'scale(0)';
             playerSide.innerHTML = '';
             botSide.innerHTML = '';
+            betValue = 0;
             playerCardsValue = 0;
             botCardsValue = 0;
             deck = [];
             betButtonsContainer.style.transform = 'scale(1)';
-        }, 30000);
+        }, 3000);
 }
 /* counting how many cards could fit in botSide, 
    returning an array of all possibilities
@@ -167,7 +176,7 @@ function correctCardsPicker(deckOfCards, highEnd){
     let randomShot = Math.random();
     let possibleCards = correctCardsPicker(deck, highEnd);
     let probability =  possibleCards.length / deck.length;
-    // logical move. if you lose, you obviously hit card to try to win
+    // logical move. if bot is losing, it obviously hit card to try to win
     if(playerCardsValue > botCardsValue){
         let hitting = hitCard(botSide, botCardsValue);
         botCardsValue = hitting;
@@ -178,7 +187,7 @@ function correctCardsPicker(deckOfCards, highEnd){
     }else if(botCardsValue > playerCardsValue){
         return "end";
     }
-    // bot picking if its profitable to risk hitting a card
+    // bot hitting if its profitable to risk hitting a card
     if (probability >= randomShot) {
         let hitting = hitCard(botSide, botCardsValue);
         botCardsValue = hitting;
@@ -190,14 +199,23 @@ function correctCardsPicker(deckOfCards, highEnd){
     return "end";
     }
   
+function sleep(milliseconds) {
+    const date = Date.now();
+    let currentDate = null;
+    do {
+      currentDate = Date.now();
+    } while (currentDate - date < milliseconds);
+  }
 
 function botTurn(){
+    // removing reverted card and appending its reflection with object saved before
     botSide.lastChild.remove();
     let newCard = cardTemplate.content.cloneNode(true);
     let img = newCard.querySelector('.card');
     img.src = images.default[revertBotCard.color + '_' + revertBotCard.rank];
     botSide.appendChild(img);
-
+    // card animation
+    console.log('dupa');
     maxCardValue = 21 - botCardsValue;
     let startBotRound = botInteligence(maxCardValue);
     if (startBotRound == "repeat") {
@@ -205,6 +223,8 @@ function botTurn(){
     }else if(startBotRound == "end"){
         return;
     }
+
+
 }
 
 
@@ -212,7 +232,6 @@ startButton.addEventListener('click', ()=>{
     startButton.style.transform = 'scale(0)';
     playerSide.classList.add('cardHoldersActivated');
     botSide.classList.add('cardHoldersActivated');
-
     // showing buttons and balance
     setTimeout(() => {
         startButton.style.display = 'none';
@@ -289,7 +308,6 @@ betApplyButton.addEventListener('click', ()=>{
     cash.innerHTML = '$' + balance;
     maxBet = balance;
     betChosenAmount.innerHTML = 0;
-    betValue = 0;
     deckCreation();
     deck.forEach((card)=>{
         card.imgURL = images.default[card.imgURL];
@@ -311,7 +329,7 @@ passButton.addEventListener('click', ()=>{
     if(botCardsValue > 21){
         gameWin();
     }else if (botCardsValue > playerCardsValue) {
-       gameLose();
+        gameLose();
     }else if(playerCardsValue > botCardsValue){
         gameWin()
     }

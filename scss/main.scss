@@ -164,6 +164,7 @@ body{
 .card{
     width: 80px;
     height: 110px;
+    transition: 0.2s all;
 }
 .cardHoldersActivated{
     border: 5px rgb(0, 0, 0) solid;
