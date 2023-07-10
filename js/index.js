@@ -79,6 +79,7 @@ function hitCard(side, cardsValue){
     let newCard = cardTemplate.content.cloneNode(true);
     let img = newCard.querySelector('.card');
     img.src = newHittedCard.imgURL;
+    img.classList.add('cardPopIn');
     cardsValue += newHittedCard.value;
     side.appendChild(img);
     return cardsValue;
@@ -86,6 +87,8 @@ function hitCard(side, cardsValue){
 }
 // first function to start a round loop
 function startOfTheGame(){
+    hitButton.style.pointerEvents = 'auto';
+    passButton.style.pointerEvents = 'auto';
     // first draw
     let startCards = [];
     let firstBotCard = deck.shift();
@@ -106,6 +109,7 @@ function startOfTheGame(){
         let newCard = cardTemplate.content.cloneNode(true);
         let img = newCard.querySelector('.card');
         img.src = startCards[i].imgURL;
+        img.classList.add('cardPopIn');
         if(i < 2){
             botSide.appendChild(img);
         } else{
@@ -178,7 +182,11 @@ function correctCardsPicker(deckOfCards, highEnd){
     let probability =  possibleCards.length / deck.length;
     // logical move. if bot is losing, it obviously hit card to try to win
     if(playerCardsValue > botCardsValue){
-        let hitting = hitCard(botSide, botCardsValue);
+        
+        let hitting = 
+        setTimeout(() => {
+            hitCard(botSide, botCardsValue);
+        }, 300);
         botCardsValue = hitting;
         if (botCardsValue > 21) {
             return "end";
@@ -198,24 +206,18 @@ function correctCardsPicker(deckOfCards, highEnd){
     }
     return "end";
     }
-  
-function sleep(milliseconds) {
-    const date = Date.now();
-    let currentDate = null;
-    do {
-      currentDate = Date.now();
-    } while (currentDate - date < milliseconds);
-  }
 
 function botTurn(){
     // removing reverted card and appending its reflection with object saved before
     botSide.lastChild.remove();
     let newCard = cardTemplate.content.cloneNode(true);
     let img = newCard.querySelector('.card');
+    img.classList.remove('cardPopIn');
     img.src = images.default[revertBotCard.color + '_' + revertBotCard.rank];
     botSide.appendChild(img);
+    img.classList.add('rotated');
+
     // card animation
-    console.log('dupa');
     maxCardValue = 21 - botCardsValue;
     let startBotRound = botInteligence(maxCardValue);
     if (startBotRound == "repeat") {
@@ -223,10 +225,7 @@ function botTurn(){
     }else if(startBotRound == "end"){
         return;
     }
-
-
 }
-
 
 startButton.addEventListener('click', ()=>{
     startButton.style.transform = 'scale(0)';
@@ -313,6 +312,8 @@ betApplyButton.addEventListener('click', ()=>{
         card.imgURL = images.default[card.imgURL];
     })
     shuffleDeck(deck);
+    hitButton.style.opacity = 1;
+    passButton.style.opacity = 1;
     startOfTheGame();
 })
 
@@ -320,20 +321,40 @@ hitButton.addEventListener('click', ()=>{
     let hitting = hitCard(playerSide, playerCardsValue);
     playerCardsValue = hitting;
     if (playerCardsValue > 21) {
-        gameLose();
+        hitButton.style.opacity = 0.4;
+        passButton.style.opacity = 0.4;
+        hitButton.style.pointerEvents = 'none';
+        passButton.style.pointerEvents = 'none';
+        setTimeout(() => {
+            gameLose();
+        }, 1000);
     }
 })
 
+function gameResultCheck(){
+    setTimeout(() => {
+        if(botCardsValue > 21){
+            gameWin();
+        }else if (botCardsValue > playerCardsValue) {
+            gameLose();
+        }else if(playerCardsValue > botCardsValue){
+            gameWin()
+        }
+        else{
+            gameTie();
+        }
+    }, 2000);
+}
+
 passButton.addEventListener('click', ()=>{
-    botTurn();
-    if(botCardsValue > 21){
-        gameWin();
-    }else if (botCardsValue > playerCardsValue) {
-        gameLose();
-    }else if(playerCardsValue > botCardsValue){
-        gameWin()
-    }
-    else{
-        gameTie();
-    }
+    botSide.lastChild.classList.remove('cardPopIn');
+    botSide.lastChild.classList.add('firstRotate');
+    hitButton.style.opacity = 0.4;
+    passButton.style.opacity = 0.4;
+    hitButton.style.pointerEvents = 'none';
+    passButton.style.pointerEvents = 'none';
+    setTimeout(() => {
+        botTurn();
+        gameResultCheck();
+    }, 200);
 })

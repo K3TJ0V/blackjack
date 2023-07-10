@@ -1,6 +1,7 @@
 $backgroundColor: radial-gradient(circle, rgb(160, 215, 158) 0%, #046100 79%)  #86b584;
 $headerFontColor: #DCEB0C linear-gradient(to top, #eeff00 0%, #ff6a00 100%);
 $buttonBackground: radial-gradient(circle, rgb(72, 148, 70) 0%, #034d00 79%)  #86b584;
+$buttonFocusBackground: radial-gradient(circle, rgb(85, 173, 82) 0%, #046100 79%)  #97cc95;
 body{
     width: 100vw;
     height: 100vh;
@@ -101,6 +102,9 @@ body{
             transition: 0.2s all;
             transform: scale(0);
         }
+        &--hit:focus, &--pass:focus{
+            background: $buttonFocusBackground;
+        }
         &--hit, &--pass{
             display: flex;
             justify-content: center;
@@ -195,5 +199,37 @@ body{
         background-clip: border-box;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
+    }
+}
+.rotated{
+    animation: revertCardRotate 0.2s linear;
+}
+.firstRotate{
+    animation: firstRotate 0.2s linear;
+}
+.cardPopIn{
+    animation: cardPopIn 0.4s linear;
+}
+
+@keyframes cardPopIn {
+    from{
+        transform: translateX(1000px);
+    }
+    to{
+        transform: translateX(0);
+    }
+}
+@keyframes revertCardRotate {
+    from{
+        transform: rotate3d(0,1,0,90deg);
+    }to{
+        transform: rotate3d(0,1,0,0deg);
+    }
+}
+@keyframes firstRotate {
+    from{
+        transform: rotate3d(0,1,0,0deg);
+    }to{
+        transform: rotate3d(0,1,0,90deg);
     }
 }
