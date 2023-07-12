@@ -28,6 +28,9 @@ let maxBet = balance;
 // creating deck of cards
 let deck = [];
 let higherCardRanks = ['ace','jack','queen',"king"];
+// bot,player hands
+let playerHand = [];
+let botHand = [];
 // board value containers
 let botCardsValue = 0;
 let playerCardsValue = 0;
@@ -58,7 +61,7 @@ for (let i = 2; i < 16; i++) {
         deck.push(new Card(i, i, 'diamonds', 'diamonds' + '_' + i));
         deck.push(new Card(i, i, 'spades', 'spades' + '_' + i));
     }else if(i > 11){
-        if (higherCardRanks[i-12] != 'A') {
+        if (higherCardRanks[i-12] != 'ace') {
             // creating higher ranked cards without ace in this block
             deck.push(new Card(higherCardRanks[i-12], 10, 'heart','heart' + '_' +  higherCardRanks[i-12]));
             deck.push(new Card(higherCardRanks[i-12], 10, 'clubs','clubs' + '_' +  higherCardRanks[i-12]));
@@ -66,22 +69,29 @@ for (let i = 2; i < 16; i++) {
             deck.push(new Card(higherCardRanks[i-12], 10, 'spades','spades' + '_' +  higherCardRanks[i-12]));
         }else{
             // adding aces with different value
-            deck.push(new Card(higherCardRanks[i-12], 11, 'heart'));
-            deck.push(new Card(higherCardRanks[i-12], 11, 'clubs'));
-            deck.push(new Card(higherCardRanks[i-12], 11, 'diamonds'));
-            deck.push(new Card(higherCardRanks[i-12], 11, 'spades'));
+            deck.push(new Card(higherCardRanks[i-12], 11, 'heart', 'heart' + '_' + higherCardRanks[i-12]));
+            deck.push(new Card(higherCardRanks[i-12], 11, 'clubs', 'clubs' + '_' + higherCardRanks[i-12]));
+            deck.push(new Card(higherCardRanks[i-12], 11, 'diamonds', 'diamonds' + '_' + higherCardRanks[i-12]));
+            deck.push(new Card(higherCardRanks[i-12], 11, 'spades', 'spades' + '_' + higherCardRanks[i-12]));
         }
     }
 }}
 // standalone function to hit card so the code looks more elegant :)
-function hitCard(side, cardsValue){
+function hitCard(side, cardsValue, hand){
     let newHittedCard = deck.shift();
+    hand.push(newHittedCard);
     let newCard = cardTemplate.content.cloneNode(true);
     let img = newCard.querySelector('.card');
     img.src = newHittedCard.imgURL;
     img.classList.add('cardPopIn');
     cardsValue += newHittedCard.value;
     side.appendChild(img);
+    for (let i = 0; i < hand.length; i++) {
+        if(hand[i].value == 11){
+            hand[i].value = 1;
+            cardsValue = cardsValue - 10;
+        }
+    }
     return cardsValue;
 
 }
@@ -104,6 +114,8 @@ function startOfTheGame(){
     let secondPlayerCard = deck.shift();
     playerCardsValue += secondPlayerCard.value;
     startCards.push(firstBotCard, secondBotCard, firstPlayerCard, secondPlayerCard);
+    botHand.push(firstBotCard, secondBotCard);
+    playerHand.push(firstPlayerCard, secondPlayerCard);
     //appending first 2 cards each side
     for (let i = 0; i < 4; i++) {
         let newCard = cardTemplate.content.cloneNode(true);
@@ -117,6 +129,19 @@ function startOfTheGame(){
         }
     }
 }
+// reset game function
+function resetGame() {
+    playerSide.innerHTML = '';
+    botSide.innerHTML = '';
+    betValue = 0;
+    playerCardsValue = 0;
+    botCardsValue = 0;
+    playerHand = [];
+    botHand = [];
+    deck = [];
+    betButtonsContainer.style.transform = 'scale(1)';
+}
+
 // declaring final result of the game functions
 function gameWin(){
     winScreen.style.transform = 'scale(1)';
@@ -125,28 +150,16 @@ function gameWin(){
         setTimeout(() => {
             // reseting game memory and going back to the beginning
             winScreen.style.transform = 'scale(0)';
-            playerSide.innerHTML = '';
-            botSide.innerHTML = '';
-            betValue = 0;
-            playerCardsValue = 0;
-            botCardsValue = 0;
-            deck = [];
-            betButtonsContainer.style.transform = 'scale(1)';
-        }, 3000);
+            resetGame()
+        }, 30000);
 }
 function gameLose(){
     loseScreen.style.transform = 'scale(1)';
         setTimeout(() => {
             // reseting game memory and going back to the beginning
             loseScreen.style.transform = 'scale(0)';
-            playerSide.innerHTML = '';
-            botSide.innerHTML = '';
-            betValue = 0;
-            playerCardsValue = 0;
-            botCardsValue = 0;
-            deck = [];
-            betButtonsContainer.style.transform = 'scale(1)';
-        }, 3000);
+            resetGame()
+        }, 30000);
 }
 function gameTie(){
     tieScreen.style.transform = 'scale(1)';
@@ -154,14 +167,8 @@ function gameTie(){
         setTimeout(() => {
             // reseting game memory and going back to the beginning
             tieScreen.style.transform = 'scale(0)';
-            playerSide.innerHTML = '';
-            botSide.innerHTML = '';
-            betValue = 0;
-            playerCardsValue = 0;
-            botCardsValue = 0;
-            deck = [];
-            betButtonsContainer.style.transform = 'scale(1)';
-        }, 3000);
+            resetGame()
+        }, 30000);
 }
 /* counting how many cards could fit in botSide, 
    returning an array of all possibilities
@@ -185,7 +192,7 @@ function correctCardsPicker(deckOfCards, highEnd){
         
         let hitting = 
         setTimeout(() => {
-            hitCard(botSide, botCardsValue);
+            hitCard(botSide, botCardsValue, botHand);
         }, 300);
         botCardsValue = hitting;
         if (botCardsValue > 21) {
@@ -197,9 +204,16 @@ function correctCardsPicker(deckOfCards, highEnd){
     }
     // bot hitting if its profitable to risk hitting a card
     if (probability >= randomShot) {
-        let hitting = hitCard(botSide, botCardsValue);
+        let hitting = hitCard(botSide, botCardsValue, botHand);
         botCardsValue = hitting;
         if (botCardsValue > 21) {
+            botHand.forEach((e)=>{
+                if(e.value == 11){
+                    e.value == 1
+                    botCardsValue = botCardsValue - 10;
+                    return 'repeat';
+                }
+            })
             return "end";
         }
         return "repeat";
@@ -318,8 +332,9 @@ betApplyButton.addEventListener('click', ()=>{
 })
 
 hitButton.addEventListener('click', ()=>{
-    let hitting = hitCard(playerSide, playerCardsValue);
+    let hitting = hitCard(playerSide, playerCardsValue, playerHand);
     playerCardsValue = hitting;
+    console.log(playerCardsValue);
     if (playerCardsValue > 21) {
         hitButton.style.opacity = 0.4;
         passButton.style.opacity = 0.4;
