@@ -88,6 +88,9 @@ body{
         position: relative;
         box-sizing: border-box;
         width: 100%;
+        @media (min-width: 700px) {
+            max-width: 60%;
+        }
         height: 200px;
         display: flex;
         align-items: center;
@@ -129,6 +132,7 @@ body{
         }
     }
     &__table{
+        box-sizing: border-box;
         position: relative;
         display: flex;
         flex-direction: column;
@@ -136,7 +140,7 @@ body{
         width: 300px;
         height: 600px;
         background-image: url(../assets/table.svg);
-        background-size: contain;
+        background-size: cover;
         background-repeat: no-repeat;
         &--startButton{
             position: absolute;
@@ -157,7 +161,7 @@ body{
 .table__botSide , .table__playerSide{
     box-sizing: border-box;
     padding: 5px;
-    width: 100%;
+    width: 99%;
     height: 135px;
     display: flex;
     justify-content: center;
@@ -165,17 +169,24 @@ body{
     padding: 0;
     transition: 0.3s all;
 }
+.cardsFoldingClass{
+    display: grid;
+    grid-template-columns: 30px 30px 30px 30px 30px;
+}
 .card{
+    left: 10%;
     width: 80px;
     height: 110px;
     transition: 0.2s all;
 }
+
+
 .cardHoldersActivated{
     border: 5px rgb(0, 0, 0) solid;
     box-shadow: inset 5px 5px 15px black, inset -5px -5px 15px black ;
 }
 
-.loseScreen, .winScreen, .tieScreen{
+.loseScreen, .winScreen, .tieScreen, .blackjackEvent{
     position: absolute;
     top: 0;
     width: 100vw;

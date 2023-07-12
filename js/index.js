@@ -3,8 +3,10 @@ import "../scss/main.scss";
 import * as images from './imagesURLs';
 
 const startButton = document.querySelector('.startButton-js');
-const playerSide = document.querySelector('.playerSide--js');
-const botSide = document.querySelector('.botSide--js');
+const playerTable = document.querySelector('.playerSide--js');
+const botTable = document.querySelector('.botSide--js');
+const playerSide = document.querySelector('.playerCardsHolder');
+const botSide = document.querySelector('.botCardsHolder');
 const cardTemplate = document.querySelector('#cardTemplate');
 const hitButton = document.querySelector('.hit-js');
 const passButton = document.querySelector('.pass-js');
@@ -17,6 +19,7 @@ const betApplyButton = document.querySelector('.main__bet--apply');
 const loseScreen = document.querySelector('.loseScreen');
 const winScreen = document.querySelector('.winScreen');
 const tieScreen = document.querySelector('.tieScreen');
+const blackjackScreen = document.querySelector('.blackjackEvent');
 
 let balance = parseInt(cash.innerHTML.substring(1, cash.innerHTML.length));
 
@@ -86,6 +89,9 @@ function hitCard(side, cardsValue, hand){
     img.classList.add('cardPopIn');
     cardsValue += newHittedCard.value;
     side.appendChild(img);
+    if(side.childElementCount > 3){
+        side.classList.add('cardsFoldingClass');
+    }
     for (let i = 0; i < hand.length; i++) {
         if(hand[i].value == 11){
             hand[i].value = 1;
@@ -143,6 +149,23 @@ function resetGame() {
 }
 
 // declaring final result of the game functions
+function blackjack(){
+    blackjackScreen.style.transform = 'scale(1)';
+    if (playerCardsValue == 21) {
+        balance = balance + 2 * betValue;
+        cash.innerHTML = '$' + balance;
+        setTimeout(() => {
+            // reseting game memory and going back to the beginning
+            winScreen.style.transform = 'scale(0)';
+            resetGame()
+        }, 30000);
+    }
+        setTimeout(() => {
+            // reseting game memory and going back to the beginning
+            loseScreen.style.transform = 'scale(0)';
+            resetGame()
+        }, 3000);
+}
 function gameWin(){
     winScreen.style.transform = 'scale(1)';
     balance = balance + 2 * betValue;
@@ -151,7 +174,7 @@ function gameWin(){
             // reseting game memory and going back to the beginning
             winScreen.style.transform = 'scale(0)';
             resetGame()
-        }, 30000);
+        }, 3000);
 }
 function gameLose(){
     loseScreen.style.transform = 'scale(1)';
@@ -159,7 +182,7 @@ function gameLose(){
             // reseting game memory and going back to the beginning
             loseScreen.style.transform = 'scale(0)';
             resetGame()
-        }, 30000);
+        }, 3000);
 }
 function gameTie(){
     tieScreen.style.transform = 'scale(1)';
@@ -168,7 +191,7 @@ function gameTie(){
             // reseting game memory and going back to the beginning
             tieScreen.style.transform = 'scale(0)';
             resetGame()
-        }, 30000);
+        }, 3000);
 }
 /* counting how many cards could fit in botSide, 
    returning an array of all possibilities
@@ -230,8 +253,9 @@ function botTurn(){
     img.src = images.default[revertBotCard.color + '_' + revertBotCard.rank];
     botSide.appendChild(img);
     img.classList.add('rotated');
-
-    // card animation
+    if (botCardsValue == 21) {
+        blackjack();
+    }
     maxCardValue = 21 - botCardsValue;
     let startBotRound = botInteligence(maxCardValue);
     if (startBotRound == "repeat") {
@@ -243,8 +267,8 @@ function botTurn(){
 
 startButton.addEventListener('click', ()=>{
     startButton.style.transform = 'scale(0)';
-    playerSide.classList.add('cardHoldersActivated');
-    botSide.classList.add('cardHoldersActivated');
+    playerTable.classList.add('cardHoldersActivated');
+    botTable.classList.add('cardHoldersActivated');
     // showing buttons and balance
     setTimeout(() => {
         startButton.style.display = 'none';
@@ -329,6 +353,9 @@ betApplyButton.addEventListener('click', ()=>{
     hitButton.style.opacity = 1;
     passButton.style.opacity = 1;
     startOfTheGame();
+    if (playerCardsValue == 21) {
+        blackjack();
+    }
 })
 
 hitButton.addEventListener('click', ()=>{
