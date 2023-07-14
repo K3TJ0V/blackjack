@@ -156,7 +156,7 @@ function blackjack(){
         cash.innerHTML = '$' + balance;
         setTimeout(() => {
             // reseting game memory and going back to the beginning
-            winScreen.style.transform = 'scale(0)';
+            blackjackScreen.style.transform = 'scale(0)';
             resetGame()
         }, 30000);
     }
@@ -212,7 +212,6 @@ function correctCardsPicker(deckOfCards, highEnd){
     let probability =  possibleCards.length / deck.length;
     // logical move. if bot is losing, it obviously hit card to try to win
     if(playerCardsValue > botCardsValue){
-        
         let hitting = 
         setTimeout(() => {
             hitCard(botSide, botCardsValue, botHand);
@@ -361,7 +360,6 @@ betApplyButton.addEventListener('click', ()=>{
 hitButton.addEventListener('click', ()=>{
     let hitting = hitCard(playerSide, playerCardsValue, playerHand);
     playerCardsValue = hitting;
-    console.log(playerCardsValue);
     if (playerCardsValue > 21) {
         hitButton.style.opacity = 0.4;
         passButton.style.opacity = 0.4;
