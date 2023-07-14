@@ -306,6 +306,12 @@ body {
   transform: scale(0);
 }
 
+@media (height <= 800px) {
+  .main__buttons--cash {
+    font-size: 40px;
+  }
+}
+
 .main__buttons--hit:focus, .main__buttons--pass:focus {
   background: #97cc95 radial-gradient(circle, #55ad52 0%, #046100 79%);
 }
@@ -319,11 +325,16 @@ body {
   align-items: center;
   width: 120px;
   height: 80px;
-  padding: 10px;
   font-family: Casino;
   transition: all .2s;
   display: flex;
   transform: scale(0);
+}
+
+@media (height <= 800px) {
+  .main__buttons--hit, .main__buttons--pass {
+    height: 50px;
+  }
 }
 
 .main__buttons--hit-p, .main__buttons--pass-p {
@@ -344,6 +355,12 @@ body {
   height: 600px;
   display: flex;
   position: relative;
+}
+
+@media (height <= 800px) {
+  .main__table {
+    height: 400px;
+  }
 }
 
 .main__table--startButton {
