@@ -22,12 +22,11 @@ const tieScreen = document.querySelector('.tieScreen');
 const blackjackScreen = document.querySelector('.blackjackEvent');
 
 let balance = parseInt(cash.innerHTML.substring(1, cash.innerHTML.length));
-
+let maxBet;
 let maxCardValue = 0;
 
 let betButtons = [];
 let betValue = 0;
-let maxBet = balance;
 // creating deck of cards
 let deck = [];
 let higherCardRanks = ['ace','jack','queen',"king"];
@@ -168,6 +167,7 @@ function blackjack(){
 }
 function gameWin(){
     winScreen.style.transform = 'scale(1)';
+    console.log(betValue);
     balance = balance + 2 * betValue;
     cash.innerHTML = '$' + balance;
         setTimeout(() => {
@@ -213,9 +213,7 @@ function correctCardsPicker(deckOfCards, highEnd){
     // logical move. if bot is losing, it obviously hit card to try to win
     if(playerCardsValue > botCardsValue){
         let hitting = 
-        setTimeout(() => {
-            hitCard(botSide, botCardsValue, botHand);
-        }, 300);
+        hitCard(botSide, botCardsValue, botHand);
         botCardsValue = hitting;
         if (botCardsValue > 21) {
             return "end";
@@ -266,6 +264,7 @@ function botTurn(){
 }
 
 startButton.addEventListener('click', ()=>{
+    maxBet = balance;
     startButton.style.transform = 'scale(0)';
     playerTable.classList.add('cardHoldersActivated');
     botTable.classList.add('cardHoldersActivated');
@@ -329,6 +328,7 @@ betButtons.forEach((button) =>{
 })
 // the rest buttons logic clearing bet and setting max value available 
 maxBetButton.addEventListener('click', ()=>{
+    maxBet = balance;
     betValue = maxBet;
     betChosenAmount.innerHTML = betValue;
 })
@@ -343,7 +343,7 @@ betApplyButton.addEventListener('click', ()=>{
     betButtonsContainer.style.transform = 'scale(0)';
     balance = balance - parseInt(betChosenAmount.innerHTML);
     cash.innerHTML = '$' + balance;
-    maxBet = balance;
+    betValue = parseInt(betChosenAmount.innerHTML);
     betChosenAmount.innerHTML = 0;
     deckCreation();
     deck.forEach((card)=>{
