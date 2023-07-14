@@ -104,6 +104,9 @@ body{
             color: #fff;
             font-family: 'Casino';
             top: -55px;
+            @media (max-height: 800px) {
+                font-size: 40px;
+            }
             font-size: 50px;
             transition: 0.2s all;
             transform: scale(0);
@@ -118,7 +121,9 @@ body{
             font-family: 'Casino';
             border: 5px solid#023c00;
             background: $buttonBackground;
-            padding: 10px;
+            @media (max-height: 800px) {
+                height: 50px;
+            }
             border-radius: 16px;
             width: 120px;
             height: 80px;
@@ -141,6 +146,9 @@ body{
         flex-direction: column;
         justify-content: space-between;
         width: 300px;
+        @media (max-height: 800px) {
+            height: 400px;
+        }
         height: 600px;
         background-image: url(../assets/table.svg);
         background-size: cover;

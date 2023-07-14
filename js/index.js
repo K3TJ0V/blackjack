@@ -158,7 +158,7 @@ function blackjack(){
             // reseting game memory and going back to the beginning
             blackjackScreen.style.transform = 'scale(0)';
             resetGame()
-        }, 30000);
+        }, 3000);
     }
         setTimeout(() => {
             // reseting game memory and going back to the beginning
@@ -254,6 +254,7 @@ function botTurn(){
     img.classList.add('rotated');
     if (botCardsValue == 21) {
         blackjack();
+        return;
     }
     maxCardValue = 21 - botCardsValue;
     let startBotRound = botInteligence(maxCardValue);
