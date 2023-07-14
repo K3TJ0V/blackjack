@@ -399,3 +399,4 @@ passButton.addEventListener('click', ()=>{
         gameResultCheck();
     }, 200);
 })
+//
