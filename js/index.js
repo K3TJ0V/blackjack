@@ -10,6 +10,7 @@ const botSide = document.querySelector('.botCardsHolder');
 const cardTemplate = document.querySelector('#cardTemplate');
 const hitButton = document.querySelector('.hit-js');
 const passButton = document.querySelector('.pass-js');
+const doubleButton = document.querySelector('.double-js');
 const cash = document.querySelector('.cash-js');
 const betChosenAmount = document.querySelector('.main__bet--amount');
 const clearingBet = document.querySelector('.betButton__0');
@@ -24,7 +25,6 @@ const blackjackScreen = document.querySelector('.blackjackEvent');
 let balance = parseInt(cash.innerHTML.substring(1, cash.innerHTML.length));
 let maxBet;
 let maxCardValue = 0;
-
 let betButtons = [];
 let betValue = 0;
 // creating deck of cards
@@ -102,6 +102,9 @@ function hitCard(side, cardsValue, hand){
 }
 // first function to start a round loop
 function startOfTheGame(){
+    if(betValue * 2 < maxBet){
+        doubleButton.style.transform = 'scale(1)';
+    }
     hitButton.style.pointerEvents = 'auto';
     passButton.style.pointerEvents = 'auto';
     // first draw
@@ -136,6 +139,8 @@ function startOfTheGame(){
 }
 // reset game function
 function resetGame() {
+    cash.innerHTML = '$' + balance;
+    doubleButton.style.transform = 'scale(0)';
     playerSide.innerHTML = '';
     botSide.innerHTML = '';
     betValue = 0;
@@ -161,15 +166,17 @@ function blackjack(){
     }
         setTimeout(() => {
             // reseting game memory and going back to the beginning
-            loseScreen.style.transform = 'scale(0)';
+            blackjackScreen.style.transform = 'scale(0)';
             resetGame()
         }, 3000);
+
 }
 function gameWin(){
     winScreen.style.transform = 'scale(1)';
     console.log(betValue);
     balance = balance + 2 * betValue;
     cash.innerHTML = '$' + balance;
+    betValue = 0;
         setTimeout(() => {
             // reseting game memory and going back to the beginning
             winScreen.style.transform = 'scale(0)';
@@ -178,6 +185,7 @@ function gameWin(){
 }
 function gameLose(){
     loseScreen.style.transform = 'scale(1)';
+    betValue = 0;
         setTimeout(() => {
             // reseting game memory and going back to the beginning
             loseScreen.style.transform = 'scale(0)';
@@ -187,6 +195,7 @@ function gameLose(){
 function gameTie(){
     tieScreen.style.transform = 'scale(1)';
     balance = balance + betValue;
+    cash.innerHTML = '$' + balance;
         setTimeout(() => {
             // reseting game memory and going back to the beginning
             tieScreen.style.transform = 'scale(0)';
@@ -253,13 +262,14 @@ function botTurn(){
     if (botCardsValue == 21) {
         blackjack();
         return;
-    }
-    maxCardValue = 21 - botCardsValue;
-    let startBotRound = botInteligence(maxCardValue);
-    if (startBotRound == "repeat") {
-        botInteligence(maxCardValue);
-    }else if(startBotRound == "end"){
-        return;
+    }else{
+        maxCardValue = 21 - botCardsValue;
+        let startBotRound = botInteligence(maxCardValue);
+        if (startBotRound == "repeat") {
+            botInteligence(maxCardValue);
+        }else if(startBotRound == "end"){
+            return;
+        }
     }
 }
 
@@ -343,7 +353,6 @@ betApplyButton.addEventListener('click', ()=>{
     betButtonsContainer.style.transform = 'scale(0)';
     balance = balance - parseInt(betChosenAmount.innerHTML);
     cash.innerHTML = '$' + balance;
-    betValue = parseInt(betChosenAmount.innerHTML);
     betChosenAmount.innerHTML = 0;
     deckCreation();
     deck.forEach((card)=>{
@@ -390,6 +399,7 @@ function gameResultCheck(){
 passButton.addEventListener('click', ()=>{
     botSide.lastChild.classList.remove('cardPopIn');
     botSide.lastChild.classList.add('firstRotate');
+    doubleButton.style.transform = 'scale(0)';
     hitButton.style.opacity = 0.4;
     passButton.style.opacity = 0.4;
     hitButton.style.pointerEvents = 'none';
@@ -398,5 +408,34 @@ passButton.addEventListener('click', ()=>{
         botTurn();
         gameResultCheck();
     }, 200);
+});
+doubleButton.addEventListener('click', ()=>{
+    balance = balance - betValue;
+    cash.innerHTML = '$' + balance;
+    betValue = betValue * 2;
+    let hitting = hitCard(playerSide, playerCardsValue, playerHand);
+    playerCardsValue = hitting;
+    if (playerCardsValue > 21) {
+        hitButton.style.opacity = 0.4;
+        passButton.style.opacity = 0.4;
+        hitButton.style.pointerEvents = 'none';
+        passButton.style.pointerEvents = 'none';
+        setTimeout(() => {
+            gameLose();
+        }, 1000);
+        return;
+    }
+    setTimeout(() => {
+        botSide.lastChild.classList.remove('cardPopIn');
+        botSide.lastChild.classList.add('firstRotate');
+        doubleButton.style.transform = 'scale(0)';
+        hitButton.style.opacity = 0.4;
+        passButton.style.opacity = 0.4;
+        hitButton.style.pointerEvents = 'none';
+        passButton.style.pointerEvents = 'none';
+        setTimeout(() => {
+            botTurn();
+            gameResultCheck();
+        }, 200);
+    }, 300);
 })
-//

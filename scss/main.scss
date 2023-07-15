@@ -153,6 +153,36 @@ body{
         background-image: url(../assets/table.svg);
         background-size: cover;
         background-repeat: no-repeat;
+        &--double{
+            position: absolute;
+            left: 50%;
+            top: calc(50% - 50px);
+            left: calc(50% - 70px);
+            @media (max-height: 700px) {
+                top: calc(50% - 25px);
+            }
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Casino';
+            border: 5px solid#023c00;
+            background: $buttonBackground;
+            @media (max-height: 800px) {
+                height: 50px;
+            }
+            border-radius: 16px;
+            width: 140px;
+            height: 80px;
+            transition: 0.2s all;
+            transform: scale(0);
+            &-p{
+                font-size: 43px;
+                background: $headerFontColor;
+                background-clip: border-box;
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+        }
         &--startButton{
             position: absolute;
             top: calc(50% - 50px);
